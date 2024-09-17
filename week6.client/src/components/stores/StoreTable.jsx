@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import { AddStoreBar } from './AddStoreBar'
 
 
 export class StoreTable extends Component {
@@ -11,7 +12,7 @@ export class StoreTable extends Component {
         //this.addStores = this.addCustomer.bind(this);
     }
 
-    componentDidMount() {
+componentDidMount() {
         this.populateStoresData();
     }
 
@@ -48,7 +49,7 @@ export class StoreTable extends Component {
 
         return (
             <div>
-                <button onClick={this.addStores}>Add Stores</button>
+                <AddStoreBar />
                 <h1 id="tableLabel">Stores</h1>
                 {contents}
             </div>
@@ -56,8 +57,8 @@ export class StoreTable extends Component {
     }
 
     async addStores() {
+      
 
-        
 
         const data = await fetch(
             'stores', {
