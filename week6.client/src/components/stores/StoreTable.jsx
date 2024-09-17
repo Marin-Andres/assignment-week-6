@@ -8,14 +8,40 @@ export class StoreTable extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { stores: [], loading: true };
-        //this.addStores = this.addCustomer.bind(this);
+        this.state = {
+            stores: [],
+            loading: true,
+            storeName: 'a',
+            shouldUpdate: false
+        };
+        this.timer = null;
     }
 
-componentDidMount() {
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.shouldUpdate && !prevState.shouldUpdate) {
+            //Simulate a delay for SQL server response
+            this.timer = setTimeout(() => {
+                this.populateStoresData().then(response => {
+                    this.setState({ shouldUpdate: false });
+                });
+            }, 2000); //2000 milliseconds = 2 seconds
+        }
+    }
+    updateStoreName = (newStoreName) => {
+        this.setState({ storeName: newStoreName, shouldUpdate: true })
+        this.populateStoresData();
+    };
+
+    componentDidMount() {
         this.populateStoresData();
     }
 
+    componentWillUnmount() {
+        // clean-up the timeout if component unmounts
+        if (this.timer) {
+            clearTimeout(this.timer);
+        }
+    }
 
     static renderStoresTable(stores) {
         return (
@@ -49,7 +75,7 @@ componentDidMount() {
 
         return (
             <div>
-                <AddStoreBar />
+                <AddStoreBar onNewStore={this.updateStoreName} />
                 <h1 id="tableLabel">Stores</h1>
                 {contents}
             </div>
